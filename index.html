@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmniMind AI - Beta v4.2</title>
-    <!-- We load the engine directly from unpkg to bypass the network blocks completely -->
-    <script src="https://unpkg.com"></script>
+    <!-- FIXED: Added the complete, functional package path so the engine initializes correctly -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         body {
             margin: 0;
@@ -192,7 +192,7 @@
     </div>
 
     <script>
-        const URL = "https://supabase.co";
+        const URL = "https://uprupjzzafdyolungeyx.supabase.co";
         const KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
         
         let client = null;
@@ -207,10 +207,10 @@
         let fallbackTimer = null;
 
         const pigeonReplies = [
-            "🤖 Did you know pigeons can recognize all 26 letters of the English alphabet? They are watching.",
-            "🤖 Processing request... Did you know pigeon milk looks like cottage cheese? Both parents make it.",
-            "🤖 I cannot answer right now. Recalculating the aerodynamic efficiency of a street pigeon.",
-            "🤖 Fun Fact: Pigeons are surprisingly good at math. They can count and sort items just like monkeys."
+            " Did you know pigeons can recognize all 26 letters of the English alphabet? They are watching.",
+            " Processing request... Did you know pigeon milk looks like cottage cheese? Both parents make it.",
+            " I cannot answer right now. Recalculating the aerodynamic efficiency of a street pigeon.",
+            " Fun Fact: Pigeons are surprisingly good at math. They can count and sort items just like monkeys."
         ];
 
         async function sendMessage() {
@@ -243,7 +243,7 @@
             const msgHtml = `
                 <div class="msg-container ${isAI ? 'msg-left' : 'msg-right'}">
                     <div class="bubble ${isAI ? 'bubble-ai' : 'bubble-user'}">
-                        <div class="sender-tag ${isAI ? 'tag-ai' : 'tag-user'}">${isAI ? '🤖 OmniMind' : '👤 You'}</div>
+                        <div class="sender-tag ${isAI ? 'tag-ai' : 'tag-user'}">${isAI ? '⊠ OmniMind' : '👤 You'}</div>
                         <div>${text}</div>
                     </div>
                 </div>`;
