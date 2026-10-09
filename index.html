@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmniMind AI - Beta v4.2</title>
-    <script src="https://jsdelivr.net"></script>
+    <!-- Pointing to our local safe file instead of the blocked internet resource -->
+    <script src="supabase.js"></script>
     <style>
         body { margin: 0; background-color: #020617; color: #f8fafc; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; }
         .top-bar { background-color: #0f172a; border-bottom: 1px solid #1e293b; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
@@ -54,12 +55,12 @@
         </div>
     </div>
     <script>
-        const SUPABASE_URL = "https://supabase.co";
-        const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
+        const URL = "https://supabase.co";
+        const KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
         
-        let supabase = null;
+        let client = null;
         if (typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            client = window.supabase.createClient(URL, KEY);
         }
 
         const chatBox = document.getElementById('chat-box');
@@ -83,8 +84,8 @@
             userInput.value = '';
             clearTimeout(fallbackTimer);
 
-            if (supabase) {
-                await supabase.from('prank_chat').insert([{ sender: 'victim', message: text }]);
+            if (client) {
+                await client.from('prank_chat').insert([{ sender: 'victim', message: text }]);
             }
 
             fallbackTimer = setTimeout(() => { triggerPigeonResponse(); }, 15000); 
@@ -116,8 +117,8 @@
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-        if (supabase) {
-            supabase.channel('prank_room')
+        if (client) {
+            client.channel('prank_room')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prank_chat' }, payload => {
                     if (payload.new.sender === 'pranker') {
                         clearTimeout(fallbackTimer);
