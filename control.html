@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prank Master Control</title>
-    <!-- FIXED: Added the real, secure distribution link to load the database software -->
     <script src="https://jsdelivr.net"></script>
     <style>
         body {
@@ -32,21 +31,29 @@
     </style>
 </head>
 <body>
-
     <div class="header">😈 PRANK CONTROL PANEL (LIVE)</div>
     <div id="feed"><div style="color: #6b7280; text-align: center; font-style: italic;">Waiting for incoming messages...</div></div>
-
     <div class="input-row">
         <input id="prank-input" type="text" placeholder="Type ridiculous response...">
         <button id="send-btn">SEND</button>
     </div>
-
     <script>
-         async function sendPrankMessage() {
+        const SUPABASE_URL = "https://supabase.co";
+        const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
+        
+        let supabase = null;
+        if (typeof window.supabase !== 'undefined') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+
+        const feed = document.getElementById('feed');
+        const prankInput = document.getElementById('prank-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        async function sendPrankMessage() {
             const text = prankInput.value.trim();
             if (!text || !supabase) return;
             prankInput.value = '';
-            // FIXED: Changed INSERT to lowercase insert so it communicates with the database
             await supabase.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
         }
 
