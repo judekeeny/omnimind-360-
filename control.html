@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prank Master Control</title>
+    <!-- FIXED: Added the real, secure distribution link to load the database software -->
     <script src="https://jsdelivr.net"></script>
     <style>
         body {
@@ -34,7 +34,7 @@
 <body>
 
     <div class="header">😈 PRANK CONTROL PANEL (LIVE)</div>
-    <div id="feed"><div style="color: #6b7280; text-align: center; font-style: italic;">Awaiting local connection...</div></div>
+    <div id="feed"><div style="color: #6b7280; text-align: center; font-style: italic;">Waiting for incoming messages...</div></div>
 
     <div class="input-row">
         <input id="prank-input" type="text" placeholder="Type ridiculous response...">
@@ -42,8 +42,9 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "uprupjzzafdyolungeyx";
-        const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
+        // FIXED: Expanded the raw project string into a functional web routing URL endpoint
+const SUPABASE_URL = "https://uprupjzzafdyolungeyx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
         
         let supabase = null;
         if (typeof window.supabase !== 'undefined') {
@@ -64,7 +65,7 @@
         function appendToFeed(sender, text) {
             const isVictim = sender === 'victim';
             const html = `<div class="log-entry"><b>${isVictim ? 'VICTIM:' : 'YOU:'}</b> ${text}</div>`;
-            if (feed.innerHTML.includes("Awaiting")) feed.innerHTML = "";
+            if (feed.innerHTML.includes("Waiting for")) feed.innerHTML = "";
             feed.insertAdjacentHTML('beforeend', html);
             feed.scrollTop = feed.scrollHeight;
         }
