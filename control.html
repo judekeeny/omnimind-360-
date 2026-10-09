@@ -73,12 +73,13 @@ const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
         sendBtn.addEventListener('click', sendPrankMessage);
         prankInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendPrankMessage(); });
 
-        if (supabase) {
-            supabase.channel('control_room')
-                .on('postgres_changes', { event: 'INSERT', table: 'prank_chat' }, payload => {
-                    appendToFeed(payload.new.sender, payload.new.message);
-                }).subscribe();
-        }
+if (supabase) {
+    supabase.channel('control_room')
+        .on('postgres_changes', { event: 'INSERT', table: 'prank_chat' }, payload => {
+            appendToFeed(payload.new.sender, payload.new.message);
+        }).subscribe();
+}
+
     </script>
 </body>
 </html>
