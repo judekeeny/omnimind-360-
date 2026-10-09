@@ -6,27 +6,12 @@
     <title>Prank Master Control</title>
     <script src="https://jsdelivr.net"></script>
     <style>
-        body {
-            margin: 0; background-color: #111827; color: white; padding: 1rem;
-            font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box;
-        }
-        .header {
-            background-color: #451a03; border: 1px solid #78350f; color: #f59e0b;
-            padding: 0.75rem; text-align: center; font-weight: bold; border-radius: 0.5rem; margin-bottom: 1rem;
-        }
-        #feed {
-            flex: 1; overflow-y: auto; background-color: #030712; padding: 1rem;
-            border-radius: 0.75rem; border: 1px solid #374151; font-size: 0.875rem;
-        }
+        body { margin: 0; background-color: #111827; color: white; padding: 1rem; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; }
+        .header { background-color: #451a03; border: 1px solid #78350f; color: #f59e0b; padding: 0.75rem; text-align: center; font-weight: bold; border-radius: 0.5rem; margin-bottom: 1rem; }
+        #feed { flex: 1; overflow-y: auto; background-color: #030712; padding: 1rem; border-radius: 0.75rem; border: 1px solid #374151; font-size: 0.875rem; }
         .input-row { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        input {
-            flex: 1; background-color: #1f2937; border: 1px solid #374151; padding: 0.75rem;
-            border-radius: 0.75rem; color: white; outline: none;
-        }
-        button {
-            background-color: #b91c1c; color: white; border: none; padding: 0 1.5rem;
-            border-radius: 0.75rem; font-weight: bold; cursor: pointer;
-        }
+        input { flex: 1; background-color: #1f2937; border: 1px solid #374151; padding: 0.75rem; border-radius: 0.75rem; color: white; outline: none; }
+        button { background-color: #b91c1c; color: white; border: none; padding: 0 1.5rem; border-radius: 0.75rem; font-weight: bold; cursor: pointer; }
         .log-entry { padding: 0.5rem; margin-bottom: 0.5rem; border-radius: 4px; background: #1f2937; }
     </style>
 </head>
@@ -38,16 +23,13 @@
         <button id="send-btn">SEND</button>
     </div>
     <script>
-        const URL = "https://supabase.co";
-        // Paste that same massive copied key inside these quotes:
-        const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcnVwanp6YWZkeW9sdW5nZXl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0NzM2OTMsImV4cCI6MjEwNzA0OTY5M30.RDV3H9fJq41379IHsqnaIWHRuk9capXs73nCUyVl7bM";
+        const SUPABASE_URL = "https://supabase.co";
+        const SUPABASE_KEY = "PASTE_YOUR_NEW_KEY_HERE";
         
-        let client = null;
+        let supabase = null;
         if (typeof window.supabase !== 'undefined') {
-            client = window.supabase.createClient(URL, KEY);
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
-
-
 
         const feed = document.getElementById('feed');
         const prankInput = document.getElementById('prank-input');
@@ -55,9 +37,9 @@
 
         async function sendPrankMessage() {
             const text = prankInput.value.trim();
-            if (!text || !client) return;
+            if (!text || !supabase) return;
             prankInput.value = '';
-            await client.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
+            await supabase.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
         }
 
         function appendToFeed(sender, text) {
@@ -71,8 +53,8 @@
         sendBtn.addEventListener('click', sendPrankMessage);
         prankInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendPrankMessage(); });
 
-        if (client) {
-            client.channel('control_room')
+        if (supabase) {
+            supabase.channel('control_room')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prank_chat' }, payload => {
                     appendToFeed(payload.new.sender, payload.new.message);
                 }).subscribe();
