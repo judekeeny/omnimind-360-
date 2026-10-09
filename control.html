@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prank Master Control</title>
-    <script src="https://jsdelivr.net"></script>
+    <!-- Pointing to our local safe file instead of the blocked internet resource -->
+    <script src="supabase.js"></script>
     <style>
         body { margin: 0; background-color: #111827; color: white; padding: 1rem; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; }
         .header { background-color: #451a03; border: 1px solid #78350f; color: #f59e0b; padding: 0.75rem; text-align: center; font-weight: bold; border-radius: 0.5rem; margin-bottom: 1rem; }
@@ -23,12 +24,12 @@
         <button id="send-btn">SEND</button>
     </div>
     <script>
-        const SUPABASE_URL = "https://supabase.co";
-        const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
+        const URL = "https://supabase.co";
+        const KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
         
-        let supabase = null;
+        let client = null;
         if (typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            client = window.supabase.createClient(URL, KEY);
         }
 
         const feed = document.getElementById('feed');
@@ -37,9 +38,9 @@
 
         async function sendPrankMessage() {
             const text = prankInput.value.trim();
-            if (!text || !supabase) return;
+            if (!text || !client) return;
             prankInput.value = '';
-            await supabase.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
+            await client.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
         }
 
         function appendToFeed(sender, text) {
@@ -53,8 +54,8 @@
         sendBtn.addEventListener('click', sendPrankMessage);
         prankInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendPrankMessage(); });
 
-        if (supabase) {
-            supabase.channel('control_room')
+        if (client) {
+            client.channel('control_room')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prank_chat' }, payload => {
                     appendToFeed(payload.new.sender, payload.new.message);
                 }).subscribe();
