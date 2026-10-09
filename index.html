@@ -79,12 +79,6 @@
         if (typeof window.supabase !== 'undefined') {
             client = window.supabase.createClient(URL, KEY);
         }
-
-        let client = null;
-        if (typeof window.supabase !== 'undefined') {
-            client = window.supabase.createClient(URL, KEY);
-        }
-
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
