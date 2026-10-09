@@ -38,12 +38,12 @@
         <button id="send-btn">SEND</button>
     </div>
     <script>
-        const SUPABASE_URL = "https://supabase.co";
-        const SUPABASE_KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
+        const URL = "https://supabase.co";
+        const KEY = "sb_publishable_j2oROaZA-W9YyDIiaBeZgQ_HLQXCLCK";
         
-        let supabase = null;
+        let client = null;
         if (typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            client = window.supabase.createClient(URL, KEY);
         }
 
         const feed = document.getElementById('feed');
@@ -52,9 +52,9 @@
 
         async function sendPrankMessage() {
             const text = prankInput.value.trim();
-            if (!text || !supabase) return;
+            if (!text || !client) return;
             prankInput.value = '';
-            await supabase.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
+            await client.from('prank_chat').insert([{ sender: 'pranker', message: text }]);
         }
 
         function appendToFeed(sender, text) {
@@ -68,8 +68,8 @@
         sendBtn.addEventListener('click', sendPrankMessage);
         prankInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendPrankMessage(); });
 
-        if (supabase) {
-            supabase.channel('control_room')
+        if (client) {
+            client.channel('control_room')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prank_chat' }, payload => {
                     appendToFeed(payload.new.sender, payload.new.message);
                 }).subscribe();
